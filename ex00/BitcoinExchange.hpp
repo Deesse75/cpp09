@@ -22,11 +22,12 @@ class BitcoinExchange
 	public:
 		BitcoinExchange(void);
 		~BitcoinExchange(void);
-		// BitcoinExchange(BitcoinExchange const &copy);
-		// BitcoinExchange &operator=(BitcoinExchange const &aff);
+		BitcoinExchange(BitcoinExchange const &copy);
+		BitcoinExchange &operator=(BitcoinExchange const &aff);
 
 		bool checkFile(std::string filename);
 		bool convertCSV(void);
 		void convertArg(std::string filename);
-};
 
+		int getYear(void) const;
+};

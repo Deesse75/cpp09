@@ -7,20 +7,24 @@ BitcoinExchange::BitcoinExchange(void)
 	_year = now->tm_year + 1900;
 }
 
-BitcoinExchange::~BitcoinExchange(void)
-{
+BitcoinExchange::~BitcoinExchange(void) { }
 
+BitcoinExchange::BitcoinExchange(BitcoinExchange const &copy) : _year(copy.getYear()), _data(copy._data) { }
+
+BitcoinExchange &BitcoinExchange::operator=(BitcoinExchange const &aff)
+{
+	if (this != &aff){
+		_year = aff.getYear();
+		_data.clear();
+		_data = aff._data;
+	}
+	return *this;
 }
 
-// BitcoinExchange::BitcoinExchange(BitcoinExchange const &copy)
-// {
-
-// }
-
-// BitcoinExchange &BitcoinExchange::operator=(BitcoinExchange const &aff)
-// {
-
-// }
+int BitcoinExchange::getYear(void) const
+{
+	return _year;
+}
 
 bool BitcoinExchange::checkFile(std::string filename)
 {
@@ -29,7 +33,7 @@ bool BitcoinExchange::checkFile(std::string filename)
 	std::ifstream file;
 	file.open(filename.c_str());
 	if (!file.is_open()){
-		std::cout << "Error\nCannot open : " << filename << std::endl;
+		std::cerr << "Error\nCannot open : " << filename << std::endl;
 		return false;
 	}
 	if (filename.compare("data.csv") == 0)
@@ -40,7 +44,7 @@ bool BitcoinExchange::checkFile(std::string filename)
 	if (line.compare(header))
 	{
 		file.close();
-		std::cout << "Error\n" << filename << " is not conform" << std::endl;
+		std::cerr << "Error\n" << filename << " is not conform" << std::endl;
 		return false;
 	}
 	file.close();
@@ -64,11 +68,11 @@ void BitcoinExchange::convertArg(std::string filename)
 		ss >> yy >> dash1 >> mm >> dash2 >> dd >> pipe >> value;
 		val = std::strtod(value.c_str(), &end);
 		if (!ss || dash1 != '-' || dash2 != '-' || pipe != '|' || checkDate(yy, mm, dd) == false || checkValue(value) == false)
-			std::cout << "Error: bad input => " << line << std::endl;
+			std::cerr << "Error: bad input => " << line << std::endl;
 		else if (val > 1000.0)
-			std::cout << "Error: too large a number." << std::endl;
+			std::cerr << "Error: too large a number." << std::endl;
 		else if (val < 0)
-			std::cout << "Error: not a positive number." << std::endl;
+			std::cerr << "Error: not a positive number." << std::endl;
 		else{
 			std::cout << line.substr(0, 10) << " => " << value << " = ";
 			valBTC((((yy * 100) + mm) * 100) + dd, val);
@@ -92,23 +96,23 @@ bool BitcoinExchange::convertCSV(void)
 		std::istringstream ss(line);
 		ss >> yy >> dash1 >> mm >> dash2 >> dd >> comma >> value;
 		if (!ss || dash1 != '-' || dash2 != '-' || comma != ','){
-			std::cout << "Error\nInvalid format found in \"data.csv\"" << std::endl;
+			std::cerr << "Error\nInvalid format found in \"data.csv\"" << std::endl;
 			file.close();
 			return false;
 		}
 		if (checkDate(yy, mm, dd) == false){
-			std::cout << "Error\nInvalid date found in \"data.csv\"" << std::endl;
+			std::cerr << "Error\nInvalid date found in \"data.csv\"" << std::endl;
 			file.close();
 			return false;
 		}
 		if (checkValue(value) == false){
-			std::cout << "Error\nInvalid value found in \"data.csv\"" << std::endl;
+			std::cerr << "Error\nInvalid value found in \"data.csv\"" << std::endl;
 			file.close();
 			return false;
 		}
 		val = std::strtod(value.c_str(), &end);
 		if (val < 0){
-			std::cout << "Error\nNegative  value found in \"data.csv\"" << std::endl;
+			std::cerr << "Error\nNegative  value found in \"data.csv\"" << std::endl;
 			file.close();
 			return false;
 		}
@@ -116,7 +120,7 @@ bool BitcoinExchange::convertCSV(void)
 	}
 	file.close();
 	if (_data.size() == 0){
-		std::cout << "Error\nNo data in \"data.csv\"" << std::endl;
+		std::cerr << "Error\nNo data in \"data.csv\"" << std::endl;
 		return false;
 	}
 	return true;
@@ -162,7 +166,7 @@ bool BitcoinExchange::checkValue(std::string value)
 
 void BitcoinExchange::valBTC(int dt, double value)
 {
-	std::map<int, double>::iterator it = _data.begin();	
+	std::map<int, double>::iterator it = _data.begin();
 	if (dt <20090102)
 		std::cout << "0" << std::endl;
 	else{

@@ -4,7 +4,7 @@
 int main(int ac, char **av)
 {
 	if (ac != 2){
-		std::cout << "Error\nArgument missing\nUsage : <./btc> <filename>" << std::endl;
+		std::cerr << "Error\nArgument missing\nUsage : <./btc> <filename>" << std::endl;
 		return 0;
 	}
 	BitcoinExchange btc;
