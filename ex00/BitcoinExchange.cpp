@@ -22,9 +22,7 @@ BitcoinExchange &BitcoinExchange::operator=(BitcoinExchange const &aff)
 }
 
 int BitcoinExchange::getYear(void) const
-{
-	return _year;
-}
+{ return _year; }
 
 bool BitcoinExchange::checkFile(std::string filename)
 {

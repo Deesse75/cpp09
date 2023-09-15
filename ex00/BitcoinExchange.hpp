@@ -25,9 +25,9 @@ class BitcoinExchange
 		BitcoinExchange(BitcoinExchange const &copy);
 		BitcoinExchange &operator=(BitcoinExchange const &aff);
 
+		int getYear(void) const;
+
 		bool checkFile(std::string filename);
 		bool convertCSV(void);
 		void convertArg(std::string filename);
-
-		int getYear(void) const;
 };
