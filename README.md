@@ -2,7 +2,8 @@
 
     Utilisation des conteneurs
     Le conteneur utilisé dans un exercice ne pourra plus être utilisé dans un autre.
-    ***Chaque exercie contient son propre Makefile***
+
+***Chaque exercie contient son propre Makefile***
 
 ## Exercice 00: Bitcoin Exchange
 
