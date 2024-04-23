@@ -2,13 +2,14 @@
 
 PmergeMe::PmergeMe(void): _vecTime(0), _listTime(0), _size(0) { }
 PmergeMe::~PmergeMe(void) { }
-PmergeMe::PmergeMe(PmergeMe const &copy): _vecTime(copy.getVecTime()), _listTime(copy.getListTime()), _size(copy.getSize()) { }
+PmergeMe::PmergeMe(PmergeMe const &copy): _vec(copy._vec),_vecTime(copy.getVecTime()), _listTime(copy.getListTime()), _size(copy.getSize()) { }
 PmergeMe &PmergeMe::operator=(PmergeMe const &aff)
 {
 	if (this != &aff){
 		_vecTime = aff.getVecTime();
 		_listTime = aff.getListTime();
 		_size = aff.getSize();
+		_vec = aff._vec;
 	}
 	return *this;
 }
@@ -19,19 +20,21 @@ size_t PmergeMe::getSize(void) const { return _size; }
 
 bool PmergeMe::parseInVec(char **av)
 {
-	std::vector<int> vec;
 	int i = -1;
+	if (av[0][0] == 0){
+		std::cout << "Argument empty" << std::endl;
+		return false;
+	}
 	clock_t start = clock();
 	while (av[++i]){
 		if (checkIsInt(av[i]) == false)
 			return false;
-		vec.push_back(atoi(av[i]));
+		_vec.push_back(atoi(av[i]));
 	}
-	_size = vec.size();
-	mergeSortVec(vec.begin(), vec.end() - 1, vec.size());
+	_size = _vec.size();
+	mergeSortVec(_vec.begin(), _vec.end() - 1, _vec.size());
 	clock_t end = clock();
 	_vecTime = ((double)(end - start)) * 1000000.0 / CLOCKS_PER_SEC;
-	afficheVec(vec);
 	return true;
 }
 
@@ -74,7 +77,7 @@ void PmergeMe::mergeSortVec(std::vector<int>::iterator start, std::vector<int>::
 {
 	size_t mid = size / 2;
 	
-	if (size > 7){
+	if (size > 10){
 		mergeSortVec(start, start + mid - 1, mid);
 		mergeSortVec(start + mid, end, mid);
 		mergeInsertVec(start, start + mid, end + 1);
@@ -87,7 +90,7 @@ void PmergeMe::mergeSortList(std::list<int>::iterator start, std::list<int>::ite
 {
 	size_t midSize = size / 2;
 	std::list<int>::iterator mid = start;
-	if (size > 5){
+	if (size > 10){
 		for (size_t i = 0; i < midSize; i++)
 			mid++;
 		mergeSortList(start, --mid, midSize);
@@ -219,10 +222,10 @@ void PmergeMe::mergeInsertList(std::list<int>::iterator start, std::list<int>::i
 	}
 }
 
-void PmergeMe::afficheVec(std::vector<int> vec)
+void PmergeMe::afficheVec(void)
 {
-	for (std::vector<int>::iterator it = vec.begin(); it != vec.end(); it++){
-		if (it == vec.begin() + 10 && it + 1 != vec.end()){
+	for (std::vector<int>::iterator it = _vec.begin(); it != _vec.end(); it++){
+		if (it == _vec.begin() + 10 && it + 1 != _vec.end()){
 			std::cout << "[...] ";
 			break;
 		}

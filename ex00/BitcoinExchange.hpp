@@ -12,7 +12,8 @@
 
 class BitcoinExchange
 {
-		int _year;
+		int _dateMin;
+		int _dateMax;
 		std::map<int, double> _data;
 
 		bool checkDate(int yy, int mm, int dd);
@@ -25,7 +26,7 @@ class BitcoinExchange
 		BitcoinExchange(BitcoinExchange const &copy);
 		BitcoinExchange &operator=(BitcoinExchange const &aff);
 
-		int getYear(void) const;
+		int getDateMax(void) const;
 
 		bool checkFile(std::string filename);
 		bool convertCSV(void);

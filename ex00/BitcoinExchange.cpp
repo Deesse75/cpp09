@@ -2,27 +2,25 @@
 
 BitcoinExchange::BitcoinExchange(void)
 {
+	_dateMin = 20090102;
 	std::time_t t = std::time(0);
 	std::tm *now = std::localtime(&t);
-	_year = now->tm_year + 1900;
+	_dateMax = (((now->tm_year + 1900) * 100) + now->tm_mon + 1) * 100 + now->tm_mday;
 }
-
 BitcoinExchange::~BitcoinExchange(void) { }
-
-BitcoinExchange::BitcoinExchange(BitcoinExchange const &copy) : _year(copy.getYear()), _data(copy._data) { }
-
+BitcoinExchange::BitcoinExchange(BitcoinExchange const &copy) : _dateMin(20090102), _dateMax(copy.getDateMax()),_data(copy._data) { }
 BitcoinExchange &BitcoinExchange::operator=(BitcoinExchange const &aff)
 {
 	if (this != &aff){
-		_year = aff.getYear();
+		_dateMin = 20090102;
+		_dateMax = aff.getDateMax();
 		_data.clear();
 		_data = aff._data;
 	}
 	return *this;
 }
 
-int BitcoinExchange::getYear(void) const
-{ return _year; }
+int BitcoinExchange::getDateMax(void) const { return _dateMax;}
 
 bool BitcoinExchange::checkFile(std::string filename)
 {
@@ -34,7 +32,7 @@ bool BitcoinExchange::checkFile(std::string filename)
 		std::cerr << "Error\nCannot open : " << filename << std::endl;
 		return false;
 	}
-	if (filename.compare("data.csv") == 0)
+	if (filename == "data.csv")
 		header = "date,exchange_rate";
 	else
 		header = "date | value";
@@ -76,6 +74,7 @@ void BitcoinExchange::convertArg(std::string filename)
 			valBTC((((yy * 100) + mm) * 100) + dd, val);
 		}
 	}
+	std::cout << "End" << std::endl;
 }
 
 bool BitcoinExchange::convertCSV(void)
@@ -126,7 +125,8 @@ bool BitcoinExchange::convertCSV(void)
 
 bool BitcoinExchange::checkDate(int yy, int mm, int dd)
 {
-	if (yy < 2009 || yy > _year || mm < 1 || mm > 12 || dd < 1 || dd > 31)
+	int date = (((yy * 100) + mm) * 100) + dd;
+	if (date < _dateMin || date > _dateMax || mm < 1 || mm > 12 || dd < 1 || dd > 31)
 		return false;
 	switch (mm)
 	{
@@ -140,6 +140,7 @@ bool BitcoinExchange::checkDate(int yy, int mm, int dd)
 		default:
 			break;
 	}
+
 	return true;
 }
 
@@ -165,14 +166,10 @@ bool BitcoinExchange::checkValue(std::string value)
 void BitcoinExchange::valBTC(int dt, double value)
 {
 	std::map<int, double>::iterator it = _data.begin();
-	if (dt <20090102)
-		std::cout << "0" << std::endl;
-	else{
-		while (it->first < dt)
-			it++;
-		if (it == _data.end() || it->first > dt)
-			it--;
-		std::cout << it->second * value << std::endl;
-	}
+	while (it->first < dt && it != _data.end())
+		it++;
+	if (it == _data.end() || it->first > dt)
+		it--;
+	std::cout << it->second * value << std::endl;
 }
 

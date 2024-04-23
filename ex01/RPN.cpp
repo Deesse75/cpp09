@@ -73,7 +73,7 @@ bool RPN::makeOpe(size_t i)
 	_st.pop();
 	int a = _st.top();
 	_st.pop();
-	long int ret;
+	long int ret = 0;
 	if (_rpn[i] == '+')
 		ret = a + b;
 	else if (_rpn[i] == '-')

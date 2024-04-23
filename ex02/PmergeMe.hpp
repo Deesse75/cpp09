@@ -11,6 +11,7 @@
 
 class PmergeMe
 {
+		std::vector<int> _vec;
 		int _vecTime;
 		int _listTime;
 		size_t _size;
@@ -27,6 +28,8 @@ class PmergeMe
 		void insertSortList(std::list<int>::iterator start, std::list<int>::iterator end);
 		void swapValueList(std::list<int>::iterator a, std::list<int>::iterator b);
 
+		void afficheList(std::list<int> lst);
+
 	public:
 		PmergeMe(void);
 		~PmergeMe(void);
@@ -38,8 +41,8 @@ class PmergeMe
 		size_t getSize(void) const;
 
 		bool parseInVec(char **av);
-		void afficheVec(std::vector<int> vec);
-
 		bool parseInList(char **av);
-		void afficheList(std::list<int> lst);
+
+		void afficheVec(void);
+
 };
